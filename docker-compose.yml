@@ -1,0 +1,39 @@
+services:
+  app:
+    build: .
+    container_name: clinic_php
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    environment:
+      DB_HOST: db
+      DB_NAME: clinic_app
+      DB_USER: clinic_user
+      DB_PASS: clinic_pass
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.4
+    container_name: clinic_mysql
+    restart: unless-stopped
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: clinic_app
+      MYSQL_USER: clinic_user
+      MYSQL_PASSWORD: clinic_pass
+      MYSQL_ROOT_PASSWORD: root_pass
+    volumes:
+      - clinic_mysql_data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot_pass"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  clinic_mysql_data:
