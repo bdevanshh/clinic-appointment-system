@@ -497,6 +497,8 @@ textarea:focus-visible {
 
 .hero {
     position: relative;
+    /* Clip the ambient glows: they are offset past both edges. */
+    overflow: hidden;
     padding-block: var(--sp-8) var(--sp-7);
 }
 
