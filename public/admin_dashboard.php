@@ -38,9 +38,10 @@ page_header('Admin Dashboard', 'admin-page');
 ?>
 
 <section class="dashboard-head">
-    <div>
-        <p class="eyebrow">Welcome, <?= e($_SESSION['admin_name'] ?? 'Admin') ?></p>
-        <h1>Appointment dashboard</h1>
+    <div class="page-head">
+        <p class="eyebrow">Admin</p>
+        <h1>Appointments</h1>
+        <p>Signed in as <?= e($_SESSION['admin_name'] ?? 'Admin') ?>. Confirm, complete, or cancel each request below.</p>
     </div>
     <div class="dashboard-actions">
         <a class="button secondary" href="/admin_doctors.php">Manage doctors</a>
@@ -48,71 +49,81 @@ page_header('Admin Dashboard', 'admin-page');
     </div>
 </section>
 
-<section class="stats">
+<section class="stats" aria-label="Filter by status">
     <?php foreach (valid_statuses() as $item): ?>
-        <a class="stat <?= $status === $item ? 'active' : '' ?>" href="/admin_dashboard.php?status=<?= e($item) ?>">
+        <a class="stat" href="/admin_dashboard.php?status=<?= e($item) ?>"<?= $status === $item ? ' aria-current="true"' : '' ?>>
             <span><?= e(ucfirst($item)) ?></span>
             <strong><?= (int) ($counts[$item] ?? 0) ?></strong>
         </a>
     <?php endforeach; ?>
-    <a class="stat <?= $status === '' ? 'active' : '' ?>" href="/admin_dashboard.php">
+    <a class="stat" href="/admin_dashboard.php"<?= $status === '' ? ' aria-current="true"' : '' ?>>
         <span>All</span>
         <strong><?= $totalAppointments ?></strong>
     </a>
 </section>
 
-<section class="table-shell">
-    <?php if ($appointments): ?>
-        <table>
-            <thead>
-                <tr>
-                    <th>Patient</th>
-                    <th>Doctor</th>
-                    <th>Visit</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Update</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($appointments as $appointment): ?>
+<section class="table-shell" data-scrollable="false">
+    <p class="scroll-hint">Scroll the table sideways to see every column.</p>
+    <div class="table-scroll">
+        <?php if ($appointments): ?>
+            <table>
+                <thead>
                     <tr>
-                        <td>
-                            <strong><?= e($appointment['patient_name']) ?></strong>
-                            <span><?= e($appointment['patient_email']) ?></span>
-                            <span><?= e($appointment['patient_phone']) ?></span>
-                        </td>
-                        <td>
-                            <?= e($appointment['doctor_name']) ?>
-                            <span><?= e($appointment['specialty']) ?></span>
-                        </td>
-                        <td><?= e($appointment['service_name']) ?></td>
-                        <td>
-                            <?= e(date('M j, Y', strtotime($appointment['appointment_date']))) ?>
-                            <span><?= e(substr($appointment['appointment_time'], 0, 5)) ?></span>
-                        </td>
-                        <td><span class="status status-<?= e($appointment['status']) ?>"><?= e(ucfirst($appointment['status'])) ?></span></td>
-                        <td>
-                            <form class="inline-form" method="post" action="/admin_update.php">
-                                <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
-                                <input type="hidden" name="appointment_id" value="<?= (int) $appointment['id'] ?>">
-                                <select name="status" aria-label="Appointment status">
-                                    <?php foreach (valid_statuses() as $item): ?>
-                                        <option value="<?= e($item) ?>" <?= $appointment['status'] === $item ? 'selected' : '' ?>><?= e(ucfirst($item)) ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                                <button class="button compact" type="submit">Save</button>
-                            </form>
-                        </td>
+                        <th scope="col">Patient</th>
+                        <th scope="col">Doctor</th>
+                        <th scope="col">Visit</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Update</th>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    <?php else: ?>
-        <div class="empty-state">
-            <p>No appointments match this view yet.</p>
-        </div>
-    <?php endif; ?>
+                </thead>
+                <tbody>
+                    <?php foreach ($appointments as $appointment): ?>
+                        <tr>
+                            <td>
+                                <strong><?= e($appointment['patient_name']) ?></strong>
+                                <span class="sub"><?= e($appointment['patient_email']) ?></span>
+                                <span class="sub"><?= e($appointment['patient_phone']) ?></span>
+                            </td>
+                            <td>
+                                <strong><?= e($appointment['doctor_name']) ?></strong>
+                                <span class="sub"><?= e($appointment['specialty']) ?></span>
+                            </td>
+                            <td><?= e($appointment['service_name']) ?></td>
+                            <td class="when">
+                                <?= e(date('M j, Y', strtotime($appointment['appointment_date']))) ?>
+                                <span class="sub"><?= e(substr($appointment['appointment_time'], 0, 5)) ?></span>
+                            </td>
+                            <td><span class="status status-<?= e($appointment['status']) ?>"><?= e(ucfirst($appointment['status'])) ?></span></td>
+                            <td>
+                                <form class="inline-form" method="post" action="/admin_update.php">
+                                    <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
+                                    <input type="hidden" name="appointment_id" value="<?= (int) $appointment['id'] ?>">
+                                    <label class="sr-only" for="status-<?= (int) $appointment['id'] ?>">Status for <?= e($appointment['patient_name']) ?></label>
+                                    <select id="status-<?= (int) $appointment['id'] ?>" name="status">
+                                        <?php foreach (valid_statuses() as $item): ?>
+                                            <option value="<?= e($item) ?>" <?= $appointment['status'] === $item ? 'selected' : '' ?>><?= e(ucfirst($item)) ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <button class="button secondary" type="submit">Save</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php else: ?>
+            <div class="empty-state">
+                <p>No appointments <?= $status === '' ? 'yet' : 'with that status' ?></p>
+                <p class="hint"><?= $status === ''
+                    ? 'New requests appear here as soon as a patient books.'
+                    : 'Try the All filter to see every request.' ?></p>
+                <?php if ($status !== ''): ?>
+                    <a class="button secondary" href="/admin_dashboard.php">Show all appointments</a>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+    </div>
 </section>
 
 <?php page_footer(); ?>

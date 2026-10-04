@@ -77,77 +77,82 @@ page_header('Manage Doctors', 'admin-page');
 ?>
 
 <section class="dashboard-head">
-    <div>
-        <p class="eyebrow">Clinic team</p>
+    <div class="page-head">
+        <p class="eyebrow">Care team</p>
         <h1>Manage doctors</h1>
+        <p>New doctors appear on the public booking form as soon as they are added.</p>
     </div>
     <a class="button secondary" href="/admin_dashboard.php">Back to appointments</a>
 </section>
 
 <?php if ($errors): ?>
-    <div class="alert">
-        <?php foreach ($errors as $error): ?>
-            <p><?= e($error) ?></p>
-        <?php endforeach; ?>
+    <div class="alert" role="alert">
+        <strong>Check these before saving:</strong>
+        <?php foreach ($errors as $error): ?><span><?= e($error) ?></span><?php endforeach; ?>
     </div>
 <?php endif; ?>
 
 <section class="admin-columns">
     <form class="form-shell" method="post" action="/admin_doctors.php">
         <h2>Add a doctor</h2>
-        <p class="form-intro">New doctors become available on the public booking form after they are added.</p>
+        <p class="form-intro">Set the hours they are available for. Booking only offers slots inside this window.</p>
         <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
         <div class="form-grid">
-            <label>
-                Name
+            <label class="form-field">
+                <span>Name</span>
                 <input name="name" value="<?= e($old['name']) ?>" placeholder="Dr. Jordan Kim" required>
             </label>
-            <label>
-                Specialty
+            <label class="form-field">
+                <span>Specialty</span>
                 <input name="specialty" value="<?= e($old['specialty']) ?>" placeholder="Internal Medicine" required>
             </label>
-            <label>
-                Room
+            <label class="form-field">
+                <span>Room</span>
                 <input name="room" value="<?= e($old['room']) ?>" placeholder="D-301" required>
             </label>
-            <label>
-                Starts at
+            <label class="form-field">
+                <span>Available from</span>
                 <input type="time" name="starts_at" value="<?= e($old['starts_at']) ?>" required>
             </label>
-            <label>
-                Ends at
+            <label class="form-field">
+                <span>Available until</span>
                 <input type="time" name="ends_at" value="<?= e($old['ends_at']) ?>" required>
             </label>
-            <label class="full">
-                Bio
+            <label class="form-field full">
+                <span>Bio</span>
                 <textarea name="bio" rows="4" placeholder="What this doctor helps patients with." required><?= e($old['bio']) ?></textarea>
             </label>
         </div>
         <button class="button primary" type="submit">Add doctor</button>
     </form>
 
-    <section class="table-shell">
-        <table>
-            <thead>
-                <tr>
-                    <th>Doctor</th>
-                    <th>Room</th>
-                    <th>Hours</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($doctors as $doctor): ?>
+    <section class="table-shell" data-scrollable="false" aria-label="Doctor directory">
+        <p class="scroll-hint">Scroll the table sideways to see every column.</p>
+        <div class="table-scroll">
+            <table>
+                <thead>
                     <tr>
-                        <td>
-                            <strong><?= e($doctor['name']) ?></strong>
-                            <span><?= e($doctor['specialty']) ?></span>
-                        </td>
-                        <td><?= e($doctor['room']) ?></td>
-                        <td><?= e(substr($doctor['starts_at'], 0, 5)) ?> - <?= e(substr($doctor['ends_at'], 0, 5)) ?></td>
+                        <th scope="col">Doctor</th>
+                        <th scope="col">Room</th>
+                        <th scope="col">Hours</th>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php foreach ($doctors as $doctor): ?>
+                        <tr>
+                            <td>
+                                <strong><?= e($doctor['name']) ?></strong>
+                                <span class="sub"><?= e($doctor['specialty']) ?></span>
+                            </td>
+                            <td><?= e($doctor['room']) ?></td>
+                            <td class="when">
+                                <?= e(substr((string) $doctor['starts_at'], 0, 5)) ?>&ndash;<?= e(substr((string) $doctor['ends_at'], 0, 5)) ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     </section>
 </section>
 

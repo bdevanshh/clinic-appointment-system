@@ -117,80 +117,117 @@ $services = all_services();
 page_header('Book Appointment');
 ?>
 
-<section class="page-title">
-    <p class="eyebrow">Appointments</p>
-    <h1><?= $step === 1 ? 'Choose a time' : 'Complete your booking' ?></h1>
-    <p><?= $step === 1 ? 'Start with a date and time. We will show only doctors available for that slot.' : 'Select an available doctor, then add the patient details.' ?></p>
-</section>
-
-<div class="booking-steps" aria-label="Booking progress">
-    <span class="booking-step <?= $step === 1 ? 'active' : 'complete' ?>"><strong>1</strong> Date and time</span>
-    <span class="booking-step <?= $step === 2 ? 'active' : '' ?>"><strong>2</strong> Patient and doctor</span>
-</div>
-
-<?php if ($errors): ?>
-    <div class="alert">
-        <?php foreach ($errors as $error): ?><p><?= e($error) ?></p><?php endforeach; ?>
+<div class="flow">
+    <div class="page-head">
+        <p class="eyebrow">Appointments</p>
+        <h1><?= $step === 1 ? 'Choose a time' : 'Complete your booking' ?></h1>
+        <p><?= $step === 1 ? 'Pick a date and time first. The next step lists only the doctors free in that slot.' : 'Choose a doctor from the list, then add the patient details.' ?></p>
     </div>
-<?php endif; ?>
 
-<?php if ($step === 1): ?>
-    <form class="form-shell narrow" method="post" action="/book.php">
-        <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
-        <input type="hidden" name="step" value="1">
-        <label>Date<input type="date" name="appointment_date" value="<?= e($date) ?>" data-min-today required></label>
-        <label>Time
-            <select name="appointment_time" required>
-                <option value="">Choose a time</option>
-                <?php for ($hour = 9; $hour <= 17; $hour++): ?>
-                    <?php foreach (['00', '30'] as $minute): ?>
-                        <?php $value = sprintf('%02d:%s', $hour, $minute); ?>
-                        <option value="<?= e($value) ?>" <?= $time === $value ? 'selected' : '' ?>><?= e($value) ?></option>
-                    <?php endforeach; ?>
-                <?php endfor; ?>
-            </select>
-        </label>
-        <button class="button primary" type="submit">Find available doctors</button>
-    </form>
-<?php else: ?>
-    <form class="form-shell" method="post" action="/book.php">
-        <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
-        <input type="hidden" name="step" value="2">
-        <input type="hidden" name="appointment_date" value="<?= e($date) ?>">
-        <input type="hidden" name="appointment_time" value="<?= e($time) ?>">
-        <div class="selection-summary">
-            <div><span>Date</span><strong><?= e($date) ?></strong></div>
-            <div><span>Time</span><strong><?= e($time) ?></strong></div>
-            <a href="/book.php">Change</a>
+    <ol class="booking-steps" aria-label="Booking progress">
+        <li class="booking-step" data-state="<?= $step === 1 ? 'active' : 'complete' ?>">
+            <strong aria-hidden="true">1</strong> Date and time
+        </li>
+        <li class="booking-step" data-state="<?= $step === 2 ? 'active' : 'todo' ?>">
+            <strong aria-hidden="true">2</strong> Patient and doctor
+        </li>
+    </ol>
+
+    <?php if ($errors): ?>
+        <div class="alert" role="alert">
+            <strong>Check these before continuing:</strong>
+            <?php foreach ($errors as $error): ?><span><?= e($error) ?></span><?php endforeach; ?>
         </div>
-        <?php if (!$availableDoctors): ?>
-            <div class="empty-state"><p>No doctors are available for this time. Choose another time to continue.</p><a class="button secondary" href="/book.php">Choose another time</a></div>
-        <?php else: ?>
-            <div class="form-grid">
-                <label class="full">Available doctor
-                    <select name="doctor_id" required>
-                        <option value="">Choose a doctor</option>
-                        <?php foreach ($availableDoctors as $doctor): ?>
-                            <option value="<?= (int) $doctor['id'] ?>" <?= (int) $old['doctor_id'] === (int) $doctor['id'] ? 'selected' : '' ?>><?= e($doctor['name']) ?> - <?= e($doctor['specialty']) ?>, Room <?= e($doctor['room']) ?></option>
-                        <?php endforeach; ?>
+    <?php endif; ?>
+
+    <?php if ($step === 1): ?>
+        <form class="form-shell" method="post" action="/book.php">
+            <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
+            <input type="hidden" name="step" value="1">
+            <div class="form-stack">
+                <label class="form-field">
+                    <span>Date</span>
+                    <input type="date" name="appointment_date" value="<?= e($date) ?>" data-min-today required>
+                </label>
+                <label class="form-field">
+                    <span>Time</span>
+                    <select name="appointment_time" required>
+                        <option value="">Choose a time</option>
+                        <?php for ($hour = 9; $hour <= 17; $hour++): ?>
+                            <?php foreach (['00', '30'] as $minute): ?>
+                                <?php $value = sprintf('%02d:%s', $hour, $minute); ?>
+                                <option value="<?= e($value) ?>" <?= $time === $value ? 'selected' : '' ?>><?= e($value) ?></option>
+                            <?php endforeach; ?>
+                        <?php endfor; ?>
                     </select>
                 </label>
-                <label>Patient name<input name="patient_name" value="<?= e($old['patient_name']) ?>" autocomplete="name" required></label>
-                <label>Email<input type="email" name="patient_email" value="<?= e($old['patient_email']) ?>" autocomplete="email" required></label>
-                <label>Phone<input name="patient_phone" value="<?= e($old['patient_phone']) ?>" autocomplete="tel" required></label>
-                <label>Visit type
-                    <select name="service_id" required>
-                        <option value="">Choose a visit type</option>
-                        <?php foreach ($services as $service): ?>
-                            <option value="<?= (int) $service['id'] ?>" <?= (int) $old['service_id'] === (int) $service['id'] ? 'selected' : '' ?>><?= e($service['name']) ?> ($<?= e(number_format((float) $service['price'], 2)) ?>)</option>
-                        <?php endforeach; ?>
-                    </select>
-                </label>
-                <label class="full">Notes<textarea name="notes" rows="4" placeholder="Symptoms, accessibility needs, or anything the clinic should know."><?= e($old['notes']) ?></textarea></label>
             </div>
-            <button class="button primary" type="submit">Request appointment</button>
-        <?php endif; ?>
-    </form>
-<?php endif; ?>
+            <button class="button primary" type="submit">Find available doctors</button>
+        </form>
+    <?php else: ?>
+        <form class="form-shell" method="post" action="/book.php">
+            <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
+            <input type="hidden" name="step" value="2">
+            <input type="hidden" name="appointment_date" value="<?= e($date) ?>">
+            <input type="hidden" name="appointment_time" value="<?= e($time) ?>">
+            <div class="selection-summary">
+                <div>
+                    <span>Date</span>
+                    <strong><?= e(date('D, M j, Y', strtotime($date))) ?></strong>
+                </div>
+                <div>
+                    <span>Time</span>
+                    <strong><?= e(date('g:i A', strtotime($time))) ?></strong>
+                </div>
+                <a href="/book.php">Change date or time</a>
+            </div>
+            <?php if (!$availableDoctors): ?>
+                <div class="empty-state">
+                    <p>No doctors are free at that time</p>
+                    <p class="hint">Pick another time to see who is available.</p>
+                    <a class="button secondary" href="/book.php">Choose another time</a>
+                </div>
+            <?php else: ?>
+                <div class="form-grid">
+                    <label class="form-field full">
+                        <span>Available doctor</span>
+                        <select name="doctor_id" required>
+                            <option value="">Choose a doctor</option>
+                            <?php foreach ($availableDoctors as $doctor): ?>
+                                <option value="<?= (int) $doctor['id'] ?>" <?= (int) $old['doctor_id'] === (int) $doctor['id'] ? 'selected' : '' ?>><?= e($doctor['name']) ?> &mdash; <?= e($doctor['specialty']) ?>, room <?= e($doctor['room']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </label>
+                    <label class="form-field">
+                        <span>Patient name</span>
+                        <input name="patient_name" value="<?= e($old['patient_name']) ?>" autocomplete="name" required>
+                    </label>
+                    <label class="form-field">
+                        <span>Email</span>
+                        <input type="email" name="patient_email" value="<?= e($old['patient_email']) ?>" autocomplete="email" required>
+                    </label>
+                    <label class="form-field">
+                        <span>Phone</span>
+                        <input type="tel" name="patient_phone" value="<?= e($old['patient_phone']) ?>" autocomplete="tel" required>
+                    </label>
+                    <label class="form-field">
+                        <span>Visit type</span>
+                        <select name="service_id" required>
+                            <option value="">Choose a visit type</option>
+                            <?php foreach ($services as $service): ?>
+                                <option value="<?= (int) $service['id'] ?>" <?= (int) $old['service_id'] === (int) $service['id'] ? 'selected' : '' ?>><?= e($service['name']) ?> ($<?= e(number_format((float) $service['price'], 2)) ?>)</option>
+                            <?php endforeach; ?>
+                        </select>
+                    </label>
+                    <label class="form-field full">
+                        <span>Notes <span class="hint">Optional</span></span>
+                        <textarea name="notes" rows="4" placeholder="Symptoms, accessibility needs, or anything the clinic should know."><?= e($old['notes']) ?></textarea>
+                    </label>
+                </div>
+                <button class="button primary" type="submit">Request appointment</button>
+            <?php endif; ?>
+        </form>
+    <?php endif; ?>
+</div>
 
 <?php page_footer(); ?>

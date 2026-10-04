@@ -42,26 +42,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 page_header('Admin Login', 'admin-page');
 ?>
 
-<section class="page-title">
-    <p class="eyebrow">Clinic team</p>
-    <h1>Admin login</h1>
-</section>
+<div class="flow">
+    <div class="page-head">
+        <p class="eyebrow">Admin</p>
+        <h1>Sign in</h1>
+        <p>Clinic staff accounts only.</p>
+    </div>
 
-<?php if ($error): ?>
-    <div class="alert"><p><?= e($error) ?></p></div>
-<?php endif; ?>
+    <?php if ($error): ?>
+        <div class="alert" role="alert">
+            <strong>Unable to sign in</strong>
+            <span><?= e($error) ?></span>
+        </div>
+    <?php endif; ?>
 
-<form class="form-shell narrow" method="post" action="/admin.php">
-    <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
-    <label>
-        Email
-        <input type="email" name="email" value="admin@clinic.test" autocomplete="email" required>
-    </label>
-    <label>
-        Password
-        <input type="password" name="password" autocomplete="current-password" required>
-    </label>
-    <button class="button primary" type="submit">Sign in</button>
-</form>
+    <form class="form-shell" method="post" action="/admin.php">
+        <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
+        <div class="form-stack">
+            <label class="form-field">
+                <span>Email</span>
+                <input type="email" name="email" value="admin@clinic.test" autocomplete="email" required>
+            </label>
+            <label class="form-field">
+                <span>Password</span>
+                <input type="password" name="password" autocomplete="current-password" required>
+            </label>
+        </div>
+        <button class="button primary" type="submit">Sign in</button>
+    </form>
+</div>
 
 <?php page_footer(); ?>

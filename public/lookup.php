@@ -21,31 +21,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 page_header('Lookup Appointment');
 ?>
 
-<section class="page-title">
-    <p class="eyebrow">Lookup</p>
-    <h1>Find your appointment</h1>
-    <p>Use the reference number from your booking confirmation.</p>
-</section>
-
-<?php if ($errors): ?>
-    <div class="alert">
-        <?php foreach ($errors as $error): ?>
-            <p><?= e($error) ?></p>
-        <?php endforeach; ?>
+<div class="flow">
+    <div class="page-head">
+        <p class="eyebrow">Lookup</p>
+        <h1>Find your appointment</h1>
+        <p>Enter the reference number from your booking confirmation and the email you used.</p>
     </div>
-<?php endif; ?>
 
-<form class="form-shell narrow" method="post" action="/lookup.php">
-    <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
-    <label>
-        Appointment reference
-        <input type="number" min="1" name="appointment_id" required>
-    </label>
-    <label>
-        Email
-        <input type="email" name="email" autocomplete="email" required>
-    </label>
-    <button class="button primary" type="submit">Find appointment</button>
-</form>
+    <?php if ($errors): ?>
+        <div class="alert" role="alert">
+            <strong>Check these before continuing:</strong>
+            <?php foreach ($errors as $error): ?><span><?= e($error) ?></span><?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+
+    <form class="form-shell" method="post" action="/lookup.php">
+        <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
+        <div class="form-stack">
+            <label class="form-field">
+                <span>Appointment reference</span>
+                <input type="number" min="1" inputmode="numeric" name="appointment_id" required>
+            </label>
+            <label class="form-field">
+                <span>Email</span>
+                <input type="email" name="email" autocomplete="email" required>
+            </label>
+        </div>
+        <button class="button primary" type="submit">Find appointment</button>
+    </form>
+</div>
 
 <?php page_footer(); ?>
