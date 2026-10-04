@@ -43,7 +43,6 @@ page_header('Admin Login', 'admin-page');
 
 <div class="flow">
     <div class="page-head">
-        <p class="eyebrow">Admin</p>
         <h1>Sign in</h1>
         <p>Clinic staff accounts only.</p>
     </div>

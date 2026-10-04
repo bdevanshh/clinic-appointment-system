@@ -118,19 +118,25 @@ page_header('Book Appointment');
 
 <div class="flow">
     <div class="page-head">
-        <p class="eyebrow">Appointments</p>
-        <h1><?= $step === 1 ? 'Choose a time' : 'Complete your booking' ?></h1>
+        <h1><?= $step === 1 ? 'Choose a date and time' : 'Complete your booking' ?></h1>
         <p><?= $step === 1 ? 'Pick a date and time first. The next step lists only the doctors free in that slot.' : 'Choose a doctor from the list, then add the patient details.' ?></p>
     </div>
 
-    <ol class="booking-steps" aria-label="Booking progress">
-        <li class="booking-step" data-state="<?= $step === 1 ? 'active' : 'complete' ?>">
-            <strong aria-hidden="true">1</strong> Date and time
+    <ul class="steps" aria-label="Booking progress">
+        <li class="step" data-state="<?= $step === 1 ? 'active' : 'complete' ?>">
+            <span class="step-label">
+                <?php if ($step === 2): ?><small>Complete</small><?php endif; ?>
+                Date and time
+            </span>
         </li>
-        <li class="booking-step" data-state="<?= $step === 2 ? 'active' : 'todo' ?>">
-            <strong aria-hidden="true">2</strong> Patient and doctor
+        <li class="step-divider" aria-hidden="true"><?= icon('arrow-right', 'icon-sm') ?></li>
+        <li class="step" data-state="<?= $step === 2 ? 'active' : 'todo' ?>">
+            <span class="step-label">
+                <?php if ($step === 1): ?><small>Next</small><?php endif; ?>
+                Doctor and patient
+            </span>
         </li>
-    </ol>
+    </ul>
 
     <?php if ($errors): ?>
         <div class="alert" role="alert">
@@ -142,7 +148,11 @@ page_header('Book Appointment');
     <?php if ($step === 1): ?>
         <form class="form-shell" method="post" action="/book.php">
             <input type="hidden" name="step" value="1">
-            <div class="form-stack">
+            <div class="panel-head">
+                <h2>Date and time</h2>
+                <span class="badge"><?= icon('clock', 'icon-sm') ?> 30 min visits</span>
+            </div>
+            <div class="form-grid">
                 <label class="form-field">
                     <span>Date</span>
                     <input type="date" name="appointment_date" value="<?= e($date) ?>" data-min-today required>
@@ -154,19 +164,27 @@ page_header('Book Appointment');
                         <?php for ($hour = 9; $hour <= 17; $hour++): ?>
                             <?php foreach (['00', '30'] as $minute): ?>
                                 <?php $value = sprintf('%02d:%s', $hour, $minute); ?>
-                                <option value="<?= e($value) ?>" <?= $time === $value ? 'selected' : '' ?>><?= e($value) ?></option>
+                                <option value="<?= e($value) ?>" <?= $time === $value ? 'selected' : '' ?>><?= e(format_time($value)) ?></option>
                             <?php endforeach; ?>
                         <?php endfor; ?>
                     </select>
                 </label>
             </div>
-            <button class="button primary" type="submit">Find available doctors</button>
+            <p class="hint">Slots are offered in half-hour steps while the clinic is open, Monday to Saturday.</p>
+            <button class="button primary" type="submit">Find available doctors <?= icon('arrow-right', 'icon-sm') ?></button>
         </form>
     <?php else: ?>
         <form class="form-shell" method="post" action="/book.php">
             <input type="hidden" name="step" value="2">
             <input type="hidden" name="appointment_date" value="<?= e($date) ?>">
             <input type="hidden" name="appointment_time" value="<?= e($time) ?>">
+
+            <a class="change-link" href="/book.php"><?= icon('arrow-right', 'icon-sm') ?> Change date or time</a>
+
+            <div class="panel-head">
+                <h2>Your slot</h2>
+                <span class="badge" data-tone="secondary"><?= icon('clock', 'icon-sm') ?> <?= count($availableDoctors) ?> free</span>
+            </div>
             <div class="selection-summary">
                 <div>
                     <span>Date</span>
@@ -174,10 +192,10 @@ page_header('Book Appointment');
                 </div>
                 <div>
                     <span>Time</span>
-                    <strong><?= e(date('g:i A', strtotime($time))) ?></strong>
+                    <strong><?= e(format_time($time)) ?></strong>
                 </div>
-                <a href="/book.php">Change date or time</a>
             </div>
+
             <?php if (!$availableDoctors): ?>
                 <div class="empty-state">
                     <p>No doctors are free at that time</p>
@@ -185,6 +203,9 @@ page_header('Book Appointment');
                     <a class="button secondary" href="/book.php">Choose another time</a>
                 </div>
             <?php else: ?>
+                <div class="panel-head">
+                    <h2>Doctor and patient</h2>
+                </div>
                 <div class="form-grid">
                     <label class="form-field full">
                         <span>Available doctor</span>
@@ -212,7 +233,7 @@ page_header('Book Appointment');
                         <select name="service_id" required>
                             <option value="">Choose a visit type</option>
                             <?php foreach ($services as $service): ?>
-                                <option value="<?= (int) $service['id'] ?>" <?= (int) $old['service_id'] === (int) $service['id'] ? 'selected' : '' ?>><?= e($service['name']) ?> ($<?= e(number_format((float) $service['price'], 2)) ?>)</option>
+                                <option value="<?= (int) $service['id'] ?>" <?= (int) $old['service_id'] === (int) $service['id'] ? 'selected' : '' ?>><?= e($service['name']) ?> ($<?= e(number_format((float) $service['price'], 2)) ?>, <?= (int) $service['duration_minutes'] ?> min)</option>
                             <?php endforeach; ?>
                         </select>
                     </label>
@@ -221,7 +242,7 @@ page_header('Book Appointment');
                         <textarea name="notes" rows="4" placeholder="Symptoms, accessibility needs, or anything the clinic should know."><?= e($old['notes']) ?></textarea>
                     </label>
                 </div>
-                <button class="button primary" type="submit">Request appointment</button>
+                <button class="button primary" type="submit">Request appointment <?= icon('arrow-right', 'icon-sm') ?></button>
             <?php endif; ?>
         </form>
     <?php endif; ?>

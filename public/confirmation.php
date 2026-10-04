@@ -20,9 +20,8 @@ $appointment = $stmt->fetch();
 page_header('Appointment Confirmation');
 ?>
 
-<div class="flow wide">
+<div class="flow">
     <div class="page-head">
-        <p class="eyebrow">Confirmation</p>
         <h1><?= $appointment ? 'Appointment request received' : 'Appointment not found' ?></h1>
         <?php if ($appointment): ?>
             <p>The clinic will confirm this request. Keep the reference number to check its status later.</p>
@@ -32,18 +31,21 @@ page_header('Appointment Confirmation');
     <?php if ($appointment): ?>
         <article class="detail-card">
             <div class="detail-head">
-                <span class="status status-<?= e($appointment['status']) ?>"><?= e(ucfirst($appointment['status'])) ?></span>
+                <span class="status status-<?= e($appointment['status']) ?>">
+                    <?php if ($appointment['status'] === 'cancelled'): ?><?php else: ?><span class="dot" aria-hidden="true"></span><?php endif; ?>
+                    <?= e(ucfirst($appointment['status'])) ?>
+                </span>
                 <span class="detail-ref">Reference #<?= (int) $appointment['id'] ?></span>
             </div>
             <dl class="details">
-                <div><dt>Patient</dt><dd><?= e($appointment['patient_name']) ?></dd></div>
-                <div><dt>Doctor</dt><dd><?= e($appointment['doctor_name']) ?></dd></div>
-                <div><dt>Specialty</dt><dd><?= e($appointment['specialty']) ?></dd></div>
-                <div><dt>Room</dt><dd><?= e($appointment['room']) ?></dd></div>
-                <div><dt>Date</dt><dd><?= e(date('F j, Y', strtotime($appointment['appointment_date']))) ?></dd></div>
-                <div><dt>Time</dt><dd><?= e(substr($appointment['appointment_time'], 0, 5)) ?></dd></div>
-                <div><dt>Visit</dt><dd><?= e($appointment['service_name']) ?></dd></div>
-                <div><dt>Fee</dt><dd>$<?= e(number_format((float) $appointment['price'], 2)) ?> &middot; <?= (int) $appointment['duration_minutes'] ?> min</dd></div>
+                <div><dt><?= icon('users', 'icon-sm') ?> Patient</dt><dd><?= e($appointment['patient_name']) ?></dd></div>
+                <div><dt><?= icon('verified', 'icon-sm') ?> Doctor</dt><dd><?= e($appointment['doctor_name']) ?></dd></div>
+                <div><dt><?= icon('building', 'icon-sm') ?> Specialty</dt><dd><?= e($appointment['specialty']) ?></dd></div>
+                <div><dt><?= icon('pin', 'icon-sm') ?> Room</dt><dd><?= e($appointment['room']) ?></dd></div>
+                <div><dt><?= icon('calendar', 'icon-sm') ?> Date</dt><dd><?= e(date('F j, Y', strtotime($appointment['appointment_date']))) ?></dd></div>
+                <div><dt><?= icon('clock', 'icon-sm') ?> Time</dt><dd><?= e(format_time((string) $appointment['appointment_time'])) ?></dd></div>
+                <div><dt><?= icon('ticket', 'icon-sm') ?> Visit</dt><dd><?= e($appointment['service_name']) ?></dd></div>
+                <div><dt><?= icon('tag', 'icon-sm') ?> Fee</dt><dd>$<?= e(number_format((float) $appointment['price'], 2)) ?> &middot; <?= (int) $appointment['duration_minutes'] ?> min</dd></div>
             </dl>
             <div class="detail-actions">
                 <a class="button primary" href="/lookup.php">Look up another appointment</a>
@@ -51,10 +53,12 @@ page_header('Appointment Confirmation');
             </div>
         </article>
     <?php else: ?>
-        <div class="empty-state">
-            <p>No appointment matches that reference and email</p>
-            <p class="hint">Check both values and try again. The reference number is on your booking confirmation.</p>
-            <a class="button primary" href="/lookup.php">Try again</a>
+        <div class="panel">
+            <div class="empty-state">
+                <p>No appointment matches that reference and email</p>
+                <p class="hint">Check both values and try again. The reference number is on your booking confirmation.</p>
+                <a class="button primary" href="/lookup.php">Try again</a>
+            </div>
         </div>
     <?php endif; ?>
 </div>

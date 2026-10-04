@@ -77,7 +77,6 @@ page_header('Manage Doctors', 'admin-page');
 
 <section class="dashboard-head">
     <div class="page-head">
-        <p class="eyebrow">Care team</p>
         <h1>Manage doctors</h1>
         <p>New doctors appear on the public booking form as soon as they are added.</p>
     </div>
@@ -144,7 +143,7 @@ page_header('Manage Doctors', 'admin-page');
                             </td>
                             <td><?= e($doctor['room']) ?></td>
                             <td class="when">
-                                <?= e(substr((string) $doctor['starts_at'], 0, 5)) ?>&ndash;<?= e(substr((string) $doctor['ends_at'], 0, 5)) ?>
+                                <?= e(format_time((string) $doctor['starts_at'])) ?>&ndash;<?= e(format_time((string) $doctor['ends_at'])) ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
