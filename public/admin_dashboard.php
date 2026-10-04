@@ -92,7 +92,7 @@ page_header('Admin Dashboard', 'admin-page');
                             <td><?= e($appointment['service_name']) ?></td>
                             <td class="when">
                                 <?= e(date('M j, Y', strtotime($appointment['appointment_date']))) ?>
-                                <span class="sub"><?= e(substr($appointment['appointment_time'], 0, 5)) ?></span>
+                                <span class="sub"><?= e(format_time((string) $appointment['appointment_time'])) ?></span>
                             </td>
                             <td><span class="status status-<?= e($appointment['status']) ?>"><?= e(ucfirst($appointment['status'])) ?></span></td>
                             <td>

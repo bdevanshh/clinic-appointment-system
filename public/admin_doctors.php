@@ -144,7 +144,7 @@ page_header('Manage Doctors', 'admin-page');
                             </td>
                             <td><?= e($doctor['room']) ?></td>
                             <td class="when">
-                                <?= e(substr((string) $doctor['starts_at'], 0, 5)) ?>&ndash;<?= e(substr((string) $doctor['ends_at'], 0, 5)) ?>
+                                <?= e(format_time((string) $doctor['starts_at'])) ?>&ndash;<?= e(format_time((string) $doctor['ends_at'])) ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
