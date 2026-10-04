@@ -196,8 +196,10 @@ a { color: var(--text-accent); }
     margin-inline: auto;
 }
 
+/* Full-bleed section wrappers hold their own .shell, so they must stay out of
+   this rule or the gutter gets applied twice and the grid loses alignment. */
 .site-header,
-main > *,
+main > *:not(.hero):not(.section):not(.section-tight):not(.section-band),
 .site-footer,
 .flash {
     width: min(var(--measure), 100% - (var(--gutter) * 2));
@@ -208,8 +210,6 @@ main {
     display: block;
     padding-block-end: var(--sp-9);
 }
-
-main > .section-band { width: 100%; }
 
 /* Breathing room so the first heading never crowds the sticky header. */
 main > .flow,
@@ -382,7 +382,10 @@ h3 {
     display: flex;
     align-items: center;
     gap: var(--sp-1);
+    scrollbar-width: none;
 }
+
+.main-nav::-webkit-scrollbar { display: none; }
 
 .main-nav a {
     display: inline-flex;
@@ -1655,13 +1658,13 @@ td .when {
 }
 
 @media (max-width: 720px) {
-    :root { --gutter: 16px; }
+    :root { --gutter: 22px; }
 
     .site-header {
         position: static;
         flex-wrap: wrap;
         margin-block-start: var(--sp-3);
-        padding: var(--sp-2) var(--sp-3);
+        padding: var(--sp-3) var(--sp-4);
     }
 
     .main-nav {
