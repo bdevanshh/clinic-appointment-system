@@ -1,6 +1,3 @@
-CREATE DATABASE IF NOT EXISTS clinic_app CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE clinic_app;
-
 CREATE TABLE IF NOT EXISTS doctors (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(120) NOT NULL,
@@ -12,7 +9,7 @@ CREATE TABLE IF NOT EXISTS doctors (
     active TINYINT(1) NOT NULL DEFAULT 1,
     UNIQUE KEY unique_doctor_name (name),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS services (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -22,7 +19,7 @@ CREATE TABLE IF NOT EXISTS services (
     price DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
     active TINYINT(1) NOT NULL DEFAULT 1,
     UNIQUE KEY unique_service_name (name)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS appointments (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -40,7 +37,7 @@ CREATE TABLE IF NOT EXISTS appointments (
     CONSTRAINT fk_appointments_doctor FOREIGN KEY (doctor_id) REFERENCES doctors(id),
     CONSTRAINT fk_appointments_service FOREIGN KEY (service_id) REFERENCES services(id),
     UNIQUE KEY unique_doctor_slot (doctor_id, appointment_date, appointment_time)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS admins (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -48,7 +45,7 @@ CREATE TABLE IF NOT EXISTS admins (
     email VARCHAR(160) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO doctors (name, specialty, bio, room, starts_at, ends_at) VALUES
 ('Dr. Anika Shah', 'Family Medicine', 'Primary care for adults and children with a preventive-care focus.', 'A-101', '09:00:00', '16:30:00'),

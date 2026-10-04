@@ -8,6 +8,85 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+migrate();
+
+/**
+ * @return array<string, string> version => absolute path
+ */
+function migration_files(): array
+{
+    $paths = glob(__DIR__ . '/../db/migrations/*.sql') ?: [];
+    sort($paths);
+
+    $files = [];
+    foreach ($paths as $path) {
+        $files[basename($path, '.sql')] = $path;
+    }
+
+    return $files;
+}
+
+function applied_migrations(PDO $pdo): array
+{
+    $versions = $pdo->query('SELECT version FROM schema_migrations')->fetchAll(PDO::FETCH_COLUMN);
+
+    return array_fill_keys(array_map('strval', $versions), true);
+}
+
+/**
+ * Applies any migration not yet recorded in schema_migrations.
+ *
+ * Serverless platforms start containers concurrently, so the work is
+ * serialised with a MySQL advisory lock and re-checked once held.
+ */
+function migrate(): void
+{
+    static $ran = false;
+
+    if ($ran) {
+        return;
+    }
+    $ran = true;
+
+    $pdo = db();
+    $pdo->exec('CREATE TABLE IF NOT EXISTS schema_migrations (
+        version VARCHAR(190) NOT NULL PRIMARY KEY,
+        applied_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4');
+
+    $files = migration_files();
+    if (array_diff_key($files, applied_migrations($pdo)) === []) {
+        return;
+    }
+
+    $acquired = (int) $pdo->query("SELECT GET_LOCK('clinic_migrations', 10)")->fetchColumn();
+    if ($acquired !== 1) {
+        throw new RuntimeException('Could not acquire the migration lock.');
+    }
+
+    try {
+        $applied = applied_migrations($pdo);
+
+        foreach ($files as $version => $path) {
+            if (isset($applied[$version])) {
+                continue;
+            }
+
+            $sql = file_get_contents($path);
+            if ($sql === false) {
+                throw new RuntimeException("Could not read migration {$version}.");
+            }
+
+            $pdo->exec($sql);
+
+            $insert = $pdo->prepare('INSERT INTO schema_migrations (version) VALUES (?)');
+            $insert->execute([$version]);
+        }
+    } finally {
+        $pdo->query("SELECT RELEASE_LOCK('clinic_migrations')");
+    }
+}
+
 function e(?string $value): string
 {
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
