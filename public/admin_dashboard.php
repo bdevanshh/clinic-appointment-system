@@ -39,7 +39,6 @@ page_header('Admin Dashboard', 'admin-page');
 
 <section class="dashboard-head">
     <div class="page-head">
-        <p class="eyebrow">Admin</p>
         <h1>Appointments</h1>
         <p>Signed in as <?= e($_SESSION['admin_name'] ?? 'Admin') ?>. Confirm, complete, or cancel each request below.</p>
     </div>

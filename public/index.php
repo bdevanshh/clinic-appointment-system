@@ -13,7 +13,6 @@ page_header('Home', 'home-page');
 <section class="hero">
     <div class="shell hero-grid">
         <div class="hero-copy">
-            <p class="eyebrow">Same-week appointments</p>
             <h1>Book your clinic visit online, without the phone queue.</h1>
             <p>Pick a date and time, then choose from the doctors who are actually free in that slot. Your request reaches the clinic the moment you send it.</p>
             <ul class="hero-points">
@@ -120,7 +119,6 @@ page_header('Home', 'home-page');
     <div class="shell">
         <div class="split-head">
             <div>
-                <p class="eyebrow">Visit types</p>
                 <h2>Consultations and fees</h2>
             </div>
             <span class="hint">Fees are confirmed when the clinic approves your request.</span>
@@ -144,7 +142,6 @@ page_header('Home', 'home-page');
     <div class="shell section">
         <div class="split-head">
             <div>
-                <p class="eyebrow">Care team</p>
                 <h2>Doctors and specialists</h2>
             </div>
             <a class="button secondary" href="/book.php">Start a booking</a>
@@ -192,7 +189,6 @@ page_header('Home', 'home-page');
     <div class="shell">
         <div class="info-card">
             <div>
-                <p class="eyebrow">Before you arrive</p>
                 <h2>Everything you need is on the booking form.</h2>
                 <p class="form-intro">Name, email, a reachable phone number, the visit type, and anything the doctor should know before you arrive. Notes are optional.</p>
                 <div class="info-points">

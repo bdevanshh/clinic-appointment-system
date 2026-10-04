@@ -211,6 +211,12 @@ main {
 
 main > .section-band { width: 100%; }
 
+/* Breathing room so the first heading never crowds the sticky header. */
+main > .flow,
+main > .dashboard-head {
+    padding-block-start: var(--sp-7);
+}
+
 /* Task pages stack their own blocks; landing sections already carry padding. */
 main > * + * { margin-block-start: var(--sp-5); }
 
@@ -231,7 +237,7 @@ main > .section-band + * { margin-block-start: 0; }
     margin-block-end: var(--sp-7);
 }
 
-.section-head > p:not(.eyebrow) {
+.section-head > p {
     color: var(--text-muted);
     text-wrap: pretty;
 }
@@ -266,7 +272,7 @@ main > .section-band + * { margin-block-start: 0; }
     max-width: 62ch;
 }
 
-.page-head > p:not(.eyebrow) {
+.page-head > p {
     color: var(--text-muted);
     text-wrap: pretty;
 }
@@ -303,14 +309,6 @@ h3 {
     font-weight: 600;
     line-height: 1.33;
     letter-spacing: -.01em;
-}
-
-.eyebrow {
-    color: var(--text-muted);
-    font-size: var(--text-label-md);
-    font-weight: 600;
-    line-height: 1.33;
-    letter-spacing: .04em;
 }
 
 .kicker {
@@ -499,7 +497,7 @@ textarea:focus-visible {
 
 .hero {
     position: relative;
-    padding-block: var(--sp-7) var(--sp-8);
+    padding-block: var(--sp-8) var(--sp-7);
 }
 
 .hero::before,
@@ -544,7 +542,7 @@ textarea:focus-visible {
     gap: var(--sp-5);
 }
 
-.hero-copy > p:not(.eyebrow) {
+.hero-copy > p {
     max-width: 54ch;
     color: var(--text-body);
     font-size: var(--text-body-lg);
@@ -1171,18 +1169,6 @@ textarea:hover { border-color: var(--outline); }
     opacity: .8;
 }
 
-.step strong {
-    display: grid;
-    width: 28px;
-    height: 28px;
-    place-items: center;
-    color: var(--text-muted);
-    background: var(--surface-container-highest);
-    border-radius: 50%;
-    font-size: var(--text-label-md);
-    font-weight: 600;
-}
-
 .step-label {
     display: grid;
     gap: 1px;
@@ -1203,17 +1189,10 @@ textarea:hover { border-color: var(--outline); }
     opacity: 1;
 }
 
-.step[data-state='active'] strong {
-    color: var(--on-primary);
-    background: var(--primary);
-    box-shadow: var(--shadow-sm);
-}
-
-.step[data-state='complete'] { opacity: 1; }
-
-.step[data-state='complete'] strong {
-    color: var(--on-primary);
-    background: var(--secondary);
+.step[data-state='complete'] {
+    color: var(--on-secondary-container);
+    background: color-mix(in srgb, var(--secondary-container) 28%, transparent);
+    opacity: 1;
 }
 
 .step-divider { color: var(--outline-variant); font-size: 1.125rem; }
@@ -1690,7 +1669,10 @@ td .when {
         overflow-x: auto;
     }
 
-    .hero { padding-block: var(--sp-6) var(--sp-7); }
+    .hero { padding-block: var(--sp-7) var(--sp-6); }
+
+    main > .flow,
+    main > .dashboard-head { padding-block-start: var(--sp-6); }
 
     .hero::before,
     .hero::after { display: none; }

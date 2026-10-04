@@ -22,7 +22,6 @@ page_header('Lookup Appointment');
 
 <div class="flow">
     <div class="page-head">
-        <p class="eyebrow">Lookup</p>
         <h1>Find your appointment</h1>
         <p>Enter the reference number from your booking confirmation and the email address you used.</p>
     </div>

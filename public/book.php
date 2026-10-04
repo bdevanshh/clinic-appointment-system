@@ -118,14 +118,12 @@ page_header('Book Appointment');
 
 <div class="flow">
     <div class="page-head">
-        <p class="eyebrow">Appointments</p>
         <h1><?= $step === 1 ? 'Choose a date and time' : 'Complete your booking' ?></h1>
         <p><?= $step === 1 ? 'Pick a date and time first. The next step lists only the doctors free in that slot.' : 'Choose a doctor from the list, then add the patient details.' ?></p>
     </div>
 
-    <ol class="steps" aria-label="Booking progress">
+    <ul class="steps" aria-label="Booking progress">
         <li class="step" data-state="<?= $step === 1 ? 'active' : 'complete' ?>">
-            <strong aria-hidden="true">1</strong>
             <span class="step-label">
                 <?php if ($step === 2): ?><small>Complete</small><?php endif; ?>
                 Date and time
@@ -133,13 +131,12 @@ page_header('Book Appointment');
         </li>
         <li class="step-divider" aria-hidden="true"><?= icon('arrow-right', 'icon-sm') ?></li>
         <li class="step" data-state="<?= $step === 2 ? 'active' : 'todo' ?>">
-            <strong aria-hidden="true">2</strong>
             <span class="step-label">
                 <?php if ($step === 1): ?><small>Next</small><?php endif; ?>
                 Doctor and patient
             </span>
         </li>
-    </ol>
+    </ul>
 
     <?php if ($errors): ?>
         <div class="alert" role="alert">

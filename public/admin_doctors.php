@@ -77,7 +77,6 @@ page_header('Manage Doctors', 'admin-page');
 
 <section class="dashboard-head">
     <div class="page-head">
-        <p class="eyebrow">Care team</p>
         <h1>Manage doctors</h1>
         <p>New doctors appear on the public booking form as soon as they are added.</p>
     </div>

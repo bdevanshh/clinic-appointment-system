@@ -22,7 +22,6 @@ page_header('Appointment Confirmation');
 
 <div class="flow">
     <div class="page-head">
-        <p class="eyebrow">Confirmation</p>
         <h1><?= $appointment ? 'Appointment request received' : 'Appointment not found' ?></h1>
         <?php if ($appointment): ?>
             <p>The clinic will confirm this request. Keep the reference number to check its status later.</p>
