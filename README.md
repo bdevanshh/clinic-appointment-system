@@ -47,6 +47,7 @@ docker-compose.yml
 The app expects these environment variables when not using Docker:
 
 - `DB_HOST`
+- `DB_PORT` (defaults to `3306`)
 - `DB_NAME`
 - `DB_USER`
 - `DB_PASS`
