@@ -15,7 +15,6 @@ $old = [
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verify_csrf();
     $old = array_merge($old, array_intersect_key($_POST, $old));
     $step = (int) ($_POST['step'] ?? 1) === 2 ? 2 : 1;
 }
@@ -142,7 +141,6 @@ page_header('Book Appointment');
 
     <?php if ($step === 1): ?>
         <form class="form-shell" method="post" action="/book.php">
-            <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
             <input type="hidden" name="step" value="1">
             <div class="form-stack">
                 <label class="form-field">
@@ -166,7 +164,6 @@ page_header('Book Appointment');
         </form>
     <?php else: ?>
         <form class="form-shell" method="post" action="/book.php">
-            <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
             <input type="hidden" name="step" value="2">
             <input type="hidden" name="appointment_date" value="<?= e($date) ?>">
             <input type="hidden" name="appointment_time" value="<?= e($time) ?>">

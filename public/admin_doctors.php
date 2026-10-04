@@ -17,7 +17,6 @@ $old = [
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verify_csrf();
     $old = array_merge($old, array_intersect_key($_POST, $old));
 
     $name = trim((string) $old['name']);
@@ -96,7 +95,6 @@ page_header('Manage Doctors', 'admin-page');
     <form class="form-shell" method="post" action="/admin_doctors.php">
         <h2>Add a doctor</h2>
         <p class="form-intro">Set the hours they are available for. Booking only offers slots inside this window.</p>
-        <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
         <div class="form-grid">
             <label class="form-field">
                 <span>Name</span>

@@ -10,8 +10,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     redirect('/admin_dashboard.php');
 }
 
-verify_csrf();
-
 $id = (int) ($_POST['appointment_id'] ?? 0);
 $status = (string) ($_POST['status'] ?? '');
 

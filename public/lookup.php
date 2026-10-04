@@ -7,7 +7,6 @@ require_once __DIR__ . '/../src/helpers.php';
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verify_csrf();
     $id = (int) ($_POST['appointment_id'] ?? 0);
     $email = trim((string) ($_POST['email'] ?? ''));
 
@@ -36,7 +35,6 @@ page_header('Lookup Appointment');
     <?php endif; ?>
 
     <form class="form-shell" method="post" action="/lookup.php">
-        <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
         <div class="form-stack">
             <label class="form-field">
                 <span>Appointment reference</span>

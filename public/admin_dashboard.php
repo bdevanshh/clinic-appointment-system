@@ -97,7 +97,6 @@ page_header('Admin Dashboard', 'admin-page');
                             <td><span class="status status-<?= e($appointment['status']) ?>"><?= e(ucfirst($appointment['status'])) ?></span></td>
                             <td>
                                 <form class="inline-form" method="post" action="/admin_update.php">
-                                    <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
                                     <input type="hidden" name="appointment_id" value="<?= (int) $appointment['id'] ?>">
                                     <label class="sr-only" for="status-<?= (int) $appointment['id'] ?>">Status for <?= e($appointment['patient_name']) ?></label>
                                     <select id="status-<?= (int) $appointment['id'] ?>" name="status">

@@ -11,7 +11,6 @@ if (is_admin()) {
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verify_csrf();
     $email = trim((string) ($_POST['email'] ?? ''));
     $password = (string) ($_POST['password'] ?? '');
 
@@ -57,7 +56,6 @@ page_header('Admin Login', 'admin-page');
     <?php endif; ?>
 
     <form class="form-shell" method="post" action="/admin.php">
-        <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
         <div class="form-stack">
             <label class="form-field">
                 <span>Email</span>
