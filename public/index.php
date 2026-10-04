@@ -50,12 +50,12 @@ page_header('Home', 'home-page');
                     </select>
                 </label>
             </div>
+
             <p class="launcher-note">
                 <?= icon('clock', 'icon-sm') ?>
                 <span><strong><?= count($doctors) ?> doctors</strong> take appointments in 30-minute slots between 9:00&nbsp;AM and 6:00&nbsp;PM.</span>
             </p>
             <button class="button primary" type="submit">Find available doctors</button>
-            <p class="launcher-foot"><?= icon('lock', 'icon-sm') ?> Takes about a minute</p>
         </form>
     </div>
 </section>

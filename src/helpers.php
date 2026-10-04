@@ -193,10 +193,7 @@ function page_header(string $title, string $variant = ''): void
     </head>
     <body class="<?= e($variant) ?>">
         <header class="site-header">
-            <a class="brand" href="/">
-                <span class="brand-mark" aria-hidden="true">+</span>
-                <span><?= e(APP_NAME) ?></span>
-            </a>
+            <a class="brand" href="/"><?= e(APP_NAME) ?></a>
             <nav class="main-nav" aria-label="Primary">
                 <?php foreach (nav_items() as $item): ?>
                     <a href="<?= e($item['href']) ?>"<?= $item['current'] ? ' aria-current="page"' : '' ?>><?= e($item['label']) ?></a>
@@ -217,10 +214,7 @@ function page_footer(): void
         <footer class="site-footer">
             <div class="footer-grid">
                 <div class="footer-about">
-                    <a class="brand" href="/">
-                        <span class="brand-mark" aria-hidden="true">+</span>
-                        <span><?= e(APP_NAME) ?></span>
-                    </a>
+                    <a class="brand" href="/"><?= e(APP_NAME) ?></a>
                     <p>Same-week appointments with the doctors on duty. Choose a time, pick from whoever is free, and keep your reference number.</p>
                     <p class="kicker">Open Monday to Saturday</p>
                 </div>

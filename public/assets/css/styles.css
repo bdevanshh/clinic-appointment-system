@@ -306,7 +306,7 @@ h3 {
 }
 
 .eyebrow {
-    color: var(--text-accent);
+    color: var(--text-muted);
     font-size: var(--text-label-md);
     font-weight: 600;
     line-height: 1.33;
@@ -370,7 +370,6 @@ h3 {
 .brand {
     display: inline-flex;
     align-items: center;
-    gap: var(--sp-3);
     color: var(--primary);
     font-family: var(--font-display);
     font-size: var(--text-h3);
@@ -379,20 +378,7 @@ h3 {
     text-decoration: none;
 }
 
-.brand-mark {
-    display: grid;
-    flex: 0 0 auto;
-    width: 36px;
-    height: 36px;
-    place-items: center;
-    color: var(--on-primary);
-    background: linear-gradient(140deg, var(--primary), var(--primary-container));
-    border-radius: var(--r-sm);
-    font-size: 1.25rem;
-    font-weight: 500;
-    line-height: 1;
-    box-shadow: var(--shadow-primary);
-}
+.brand:hover { color: var(--primary-container); }
 
 .main-nav {
     display: flex;
@@ -479,7 +465,14 @@ h3 {
     box-shadow: var(--shadow-md);
 }
 
-.button.on-light:hover { background: var(--surface-container-low); }
+/* The banner behind this button is already blue: lift it, never fade it out. */
+.button.on-light:hover {
+    background: var(--surface-lowest);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-1px);
+}
+
+.button.on-light:active { transform: scale(.98); }
 
 .button.small {
     min-height: 36px;
@@ -583,20 +576,12 @@ textarea:focus-visible {
 
 /* Quick booking launcher: the design's elevated right-hand card. */
 .launcher {
-    position: relative;
-    overflow: hidden;
+    display: grid;
+    gap: var(--sp-3);
     padding: var(--sp-5);
     background: var(--surface-lowest);
     border-radius: var(--r-lg);
     box-shadow: var(--shadow-lg);
-}
-
-.launcher::before {
-    content: '';
-    position: absolute;
-    inset: 0 0 auto;
-    height: 6px;
-    background: linear-gradient(90deg, var(--primary), var(--primary-container), var(--secondary));
 }
 
 .launcher-head {
@@ -604,7 +589,7 @@ textarea:focus-visible {
     align-items: center;
     justify-content: space-between;
     gap: var(--sp-3);
-    padding-block: var(--sp-2) var(--sp-4);
+    padding-block-end: var(--sp-1);
 }
 
 .launcher-head h2 {
@@ -640,18 +625,6 @@ textarea:focus-visible {
 
 .launcher-note .icon { color: var(--secondary); }
 .launcher-note strong { color: var(--on-secondary-container); font-weight: 600; }
-
-.launcher-foot {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--sp-2);
-    padding-block-start: var(--sp-3);
-    color: var(--text-muted);
-    font-size: var(--text-label-sm);
-    letter-spacing: .04em;
-    text-transform: uppercase;
-}
 
 /* ---------- metrics band ---------- */
 
@@ -1272,9 +1245,11 @@ textarea:hover { border-color: var(--outline); }
     font-variant-numeric: tabular-nums;
 }
 
-.selection-summary a {
-    grid-column: 1 / -1;
+.change-link {
+    display: inline-flex;
+    align-items: center;
     justify-self: start;
+    gap: var(--sp-2);
     font-size: var(--text-body);
     font-weight: 600;
 }

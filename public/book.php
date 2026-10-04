@@ -152,7 +152,7 @@ page_header('Book Appointment');
         <form class="form-shell" method="post" action="/book.php">
             <input type="hidden" name="step" value="1">
             <div class="panel-head">
-                <h2>1. Date and time</h2>
+                <h2>Date and time</h2>
                 <span class="badge"><?= icon('clock', 'icon-sm') ?> 30 min visits</span>
             </div>
             <div class="form-grid">
@@ -182,8 +182,10 @@ page_header('Book Appointment');
             <input type="hidden" name="appointment_date" value="<?= e($date) ?>">
             <input type="hidden" name="appointment_time" value="<?= e($time) ?>">
 
+            <a class="change-link" href="/book.php"><?= icon('arrow-right', 'icon-sm') ?> Change date or time</a>
+
             <div class="panel-head">
-                <h2>1. Your slot</h2>
+                <h2>Your slot</h2>
                 <span class="badge" data-tone="secondary"><?= icon('clock', 'icon-sm') ?> <?= count($availableDoctors) ?> free</span>
             </div>
             <div class="selection-summary">
@@ -195,7 +197,6 @@ page_header('Book Appointment');
                     <span>Time</span>
                     <strong><?= e(format_time($time)) ?></strong>
                 </div>
-                <a href="/book.php"><?= icon('arrow-right', 'icon-sm') ?> Change date or time</a>
             </div>
 
             <?php if (!$availableDoctors): ?>
@@ -206,7 +207,7 @@ page_header('Book Appointment');
                 </div>
             <?php else: ?>
                 <div class="panel-head">
-                    <h2>2. Doctor and patient</h2>
+                    <h2>Doctor and patient</h2>
                 </div>
                 <div class="form-grid">
                     <label class="form-field full">
